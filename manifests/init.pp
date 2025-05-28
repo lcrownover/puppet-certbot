@@ -39,7 +39,8 @@ class certbot (
         'nginx': { $packages = $base_packages << 'python3-certbot-nginx' }
         default: { $packages = $base_packages }
       }
-      package { $packages: }
+      $systemd_service_d = '/etc/systemd/system/certbot.service.d/'
+      $systemd_service_override = '/etc/systemd/system/certbot.service.d/override.conf'
     }
     'RedHat': {
       $base_packages = ['certbot']
@@ -48,18 +49,18 @@ class certbot (
         'nginx': { $packages = $base_packages << 'certbot-nginx' }
         default: { $packages = $base_packages }
       }
-      package { $packages: }
+      $systemd_service_d = '/etc/systemd/system/certbot-renew.service.d/'
+      $systemd_service_override = '/etc/systemd/system/certbot-renew.service.d/override.conf'
     }
   }
+  package { $packages: }
 
-  file { '/etc/systemd/system/certbot.service.d':
-    ensure => directory,
-  }
+  file { $systemd_service_d: ensure => directory }
 
-  file { '/etc/systemd/system/certbot.service.d/override.conf':
+  file { $systemd_service_override:
     content => "[Service]\nExecStart=\nExecStart=/usr/bin/certbot renew --${webserver} -q",
     notify  => Exec['systemd-daemon-reload'],
-    require => File['/etc/systemd/system/certbot.service.d'],
+    require => File[$systemd_service_d],
   }
   exec { 'systemd-daemon-reload':
     command     => '/bin/systemctl daemon-reload',
@@ -119,6 +120,6 @@ class certbot (
   service { 'certbot.timer':
     enable    => true,
     require   => Package[$packages],
-    subscribe => File['/etc/systemd/system/certbot.service.d/override.conf'],
+    subscribe => File[$systemd_service_override],
   }
 }
