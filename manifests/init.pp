@@ -123,12 +123,8 @@ class certbot (
     require   => Package[$packages],
     subscribe => File[$systemd_service_override],
   }
-  file { '/etc/letsencrypt/.cert-created':
-    ensure => file,
-    notify => Exec['request-first-cert'],
-  }
   exec { 'request-first-cert':
-    command     => "/usr/bin/certbot -q --${webserver} --noninteractive",
-    refreshonly => true,
+    command => "/usr/bin/certbot -q --${webserver} --noninteractive && touch /etc/letsencrypt/.cert-created",
+    onlyif  => 'test ! -f /etc/letsencrypt/.cert-created',
   }
 }
