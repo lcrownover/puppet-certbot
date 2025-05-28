@@ -41,6 +41,7 @@ class certbot (
       }
       $systemd_service_d = '/etc/systemd/system/certbot.service.d/'
       $systemd_service_override = '/etc/systemd/system/certbot.service.d/override.conf'
+      $systemd_service_name = 'certbot.timer'
     }
     'RedHat': {
       $base_packages = ['certbot']
@@ -51,6 +52,7 @@ class certbot (
       }
       $systemd_service_d = '/etc/systemd/system/certbot-renew.service.d/'
       $systemd_service_override = '/etc/systemd/system/certbot-renew.service.d/override.conf'
+      $systemd_service_name = 'certbot-renew.timer'
     }
   }
   package { $packages: }
@@ -117,7 +119,7 @@ class certbot (
     match   => '^authenticator = .*$',
     require => Package[$packages],
   }
-  service { 'certbot.timer':
+  service { $systemd_service_name:
     enable    => true,
     require   => Package[$packages],
     subscribe => File[$systemd_service_override],
