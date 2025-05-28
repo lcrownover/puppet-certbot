@@ -68,7 +68,6 @@ class certbot (
     command     => '/bin/systemctl daemon-reload',
     refreshonly => true,
   }
-
   $domain_str = join($domains, ',')
   file_line { 'certbot_domains':
     ensure  => present,
@@ -123,5 +122,13 @@ class certbot (
     enable    => true,
     require   => Package[$packages],
     subscribe => File[$systemd_service_override],
+  }
+  file { '/etc/letsencrypt/.cert-created':
+    ensure => file,
+    notify => Exec['request-first-cert'],
+  }
+  exec { 'request-first-cert':
+    command     => "/usr/bin/certbot -q --${webserver} --noninteractive",
+    refreshonly => true,
   }
 }
