@@ -1,3 +1,0 @@
-class certbot::params {
-  $email = ''
-}

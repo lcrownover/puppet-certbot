@@ -27,7 +27,7 @@ class certbot (
   String $eab_keyid,
   String $eab_hmac_key,
   String $server = 'https://acme.enterprise.sectigo.com',
-) inherits certbot::params {
+) {
   include stdlib
 
   case $facts['os']['name'] {
