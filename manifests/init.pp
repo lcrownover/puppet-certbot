@@ -52,9 +52,14 @@ class certbot (
     }
   }
 
+  file { '/etc/systemd/system/certbot.service.d':
+    ensure => directory,
+  }
+
   file { '/etc/systemd/system/certbot.service.d/override.conf':
     content => "[Service]\nExecStart=\nExecStart=/usr/bin/certbot renew --${webserver} -q",
     notify  => Exec['systemd-daemon-reload'],
+    require => File['/etc/systemd/system/certbot.service.d'],
   }
   exec { 'systemd-daemon-reload':
     command     => '/bin/systemctl daemon-reload',
