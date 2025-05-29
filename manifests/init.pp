@@ -60,7 +60,7 @@ class certbot (
   file { $systemd_service_d: ensure => directory }
 
   file { $systemd_service_override:
-    content => "[Service]\nExecStart=\nExecStart=/usr/bin/certbot renew --noninteractive --${webserver} -q",
+    content => "[Service]\nExecStart=\nExecStart=/usr/bin/certbot renew --noninteractive --${webserver} -q --force-renewal",
     notify  => Exec['systemd-daemon-reload'],
     require => File[$systemd_service_d],
   }
