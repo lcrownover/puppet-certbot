@@ -124,7 +124,7 @@ class certbot (
     subscribe => File[$systemd_service_override],
   }
   exec { 'request-first-cert':
-    command => "/usr/bin/certbot -q --${webserver} --noninteractive",
+    command => "/usr/bin/certbot certonly -q --${webserver} --noninteractive",
     onlyif  => 'test ! -d /etc/letsencrypt/live',
   }
 }
