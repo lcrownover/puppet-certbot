@@ -120,6 +120,7 @@ class certbot (
   }
   service { $systemd_service_name:
     enable    => true,
+    ensure    => running,
     require   => Package[$packages],
     subscribe => File[$systemd_service_override],
   }
