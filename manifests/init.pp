@@ -32,17 +32,16 @@ class certbot (
 
   case $facts['os']['name'] {
     default: {}
-    'Ubuntu': {
-      $base_packages = ['certbot']
-      case $webserver {
-        'apache': { $packages = $base_packages << 'python3-certbot-apache' }
-        'nginx': { $packages = $base_packages << 'python3-certbot-nginx' }
-        default: { $packages = $base_packages }
-      }
-      $systemd_service_d = '/etc/systemd/system/certbot.service.d/'
-      $systemd_service_override = '/etc/systemd/system/certbot.service.d/override.conf'
-      $systemd_service_name = 'certbot.timer'
-    }
+    # not yet tested
+    # 'Ubuntu': {
+    #   $base_packages = ['certbot']
+    #   case $webserver {
+    #     'apache': { $packages = $base_packages << 'python3-certbot-apache' }
+    #     'nginx': { $packages = $base_packages << 'python3-certbot-nginx' }
+    #     default: { $packages = $base_packages }
+    #   }
+    #   $systemd_service_name = 'certbot.timer'
+    # }
     'RedHat': {
       $base_packages = ['certbot']
       case $webserver {
@@ -50,24 +49,16 @@ class certbot (
         'nginx': { $packages = $base_packages << 'certbot-nginx' }
         default: { $packages = $base_packages }
       }
-      $systemd_service_d = '/etc/systemd/system/certbot-renew.service.d/'
-      $systemd_service_override = '/etc/systemd/system/certbot-renew.service.d/override.conf'
       $systemd_service_name = 'certbot-renew.timer'
     }
   }
   package { $packages: }
 
-  file { $systemd_service_d: ensure => directory }
+  file { '/etc/sysconfig/certbot':
+    ensure  => file,
+    content => template('puppet-certbot/sysconfig-certbot.erb'),
+  }
 
-  file { $systemd_service_override:
-    content => "[Service]\nExecStart=\nExecStart=/usr/bin/certbot renew --noninteractive --${webserver} -q",
-    notify  => Exec['systemd-daemon-reload'],
-    require => File[$systemd_service_d],
-  }
-  exec { 'systemd-daemon-reload':
-    command     => '/bin/systemctl daemon-reload',
-    refreshonly => true,
-  }
   $domain_str = join($domains, ',')
   file_line { 'certbot_domains':
     ensure  => present,
@@ -121,7 +112,7 @@ class certbot (
   service { $systemd_service_name:
     enable    => true,
     require   => Package[$packages],
-    subscribe => File[$systemd_service_override],
+    subscribe => File['/etc/sysconfig/certbot'],
   }
   exec { 'request-first-cert':
     command => "/usr/bin/certbot certonly -q --${webserver} --noninteractive",
