@@ -56,7 +56,7 @@ class certbot (
 
   file { '/etc/sysconfig/certbot':
     ensure  => file,
-    content => template('puppet-certbot/sysconfig-certbot.erb'),
+    content => template('certbot/sysconfig-certbot.erb'),
   }
 
   $domain_str = join($domains, ',')
