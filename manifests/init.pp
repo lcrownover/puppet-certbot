@@ -20,6 +20,15 @@
 # @param server
 #   ACME server url. Defaults to InCommon.
 #
+# @param pre_hook
+#   Run the following command before renewing the certificate. Be sure to escape any double quotes!
+
+# @param post_hook
+#   Run the following command after renewing the certificate. Be sure to escape any double quotes!
+#
+# @param deploy_hook
+#   Run the following command PER CERTIFICATE after renewing the certificate. Be sure to escape any double quotes!
+#
 class certbot (
   Enum['apache', 'nginx'] $webserver,
   Array[String] $domains,
@@ -27,6 +36,9 @@ class certbot (
   String $eab_keyid,
   String $eab_hmac_key,
   String $server = 'https://acme.enterprise.sectigo.com',
+  String $pre_hook = '',
+  String $post_hook = '',
+  String $deploy_hook = '',
 ) {
   include stdlib
 

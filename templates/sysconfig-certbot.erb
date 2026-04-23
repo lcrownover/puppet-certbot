@@ -16,7 +16,7 @@
 #
 # An example to stop the MTA before updating certs would be
 # PRE_HOOK="--pre-hook 'systemctl stop postfix'"
-PRE_HOOK=""
+PRE_HOOK="<%= @pre_hook %>"
 
 # Command to be run in a shell after attempting to
 # obtain/renew certificates. Can be used to deploy
@@ -28,7 +28,7 @@ PRE_HOOK=""
 #
 # An example to restart httpd would be:
 # POST_HOOK="--post-hook 'systemctl restart httpd'"
-POST_HOOK=""
+POST_HOOK="<%= @post_hook %>"
 
 # Command to be run in a shell once for each
 # successfully renewed certificate. For this command,
@@ -39,7 +39,7 @@ POST_HOOK=""
 #
 # An example to run a script to alert each cert would be:
 # DEPLOY_HOOK="--deploy-hook /usr/local/bin/cert-notifier.sh"
-DEPLOY_HOOK=""
+DEPLOY_HOOK="<%= @deploy_hook %>"
 
 # Any other misc arguments for the renewal
 # See certbot -h renew for full list
