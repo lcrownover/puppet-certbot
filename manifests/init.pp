@@ -54,6 +54,11 @@ class certbot (
   }
   package { $packages: }
 
+  # temporary cleanup
+  file { '/etc/systemd/system/certbot-renew.service.d/override.conf': ensure => absent }
+  file { '/etc/systemd/system/certbot-renew.service.d': ensure => absent }
+  # end cleanup
+
   file { '/etc/sysconfig/certbot':
     ensure  => file,
     content => template('certbot/sysconfig-certbot.erb'),
