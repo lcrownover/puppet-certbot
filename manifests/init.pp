@@ -56,7 +56,7 @@ class certbot (
 
   # temporary cleanup
   file { '/etc/systemd/system/certbot-renew.service.d/override.conf': ensure => absent }
-  file { '/etc/systemd/system/certbot-renew.service.d': ensure => absent }
+  file { '/etc/systemd/system/certbot-renew.service.d': ensure => absent, force => true }
   # end cleanup
 
   file { '/etc/sysconfig/certbot':
