@@ -3,7 +3,7 @@
 # This class will manage certbot and allow you to automatically renew certs from an ACME endpoint.
 #
 # @param webserver
-#   Enum of apache or nginx to configure.
+#   Enum of apache, nginx, or standalone to configure. Use standalone for already-validated domains.
 #
 # @param domains
 #   Array of domains to register the certificate for, starting with the primary name.
@@ -30,7 +30,7 @@
 #   Run the following command PER CERTIFICATE after renewing the certificate. Be sure to escape any double quotes!
 #
 class certbot (
-  Enum['apache', 'nginx'] $webserver,
+  Enum['apache', 'nginx', 'standalone'] $webserver,
   Array[String] $domains,
   String $email,
   String $eab_keyid,
