@@ -132,7 +132,7 @@ class certbot (
     subscribe => File['/etc/sysconfig/certbot'],
   }
   exec { 'request-first-cert':
-    command => "/usr/bin/certbot certonly -q --${webserver} --noninteractive --expand",
+    command => "/usr/bin/certbot certonly -q --${webserver} --noninteractive",
     onlyif  => 'test ! -d /etc/letsencrypt/live',
   }
 }
