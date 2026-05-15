@@ -128,6 +128,7 @@ class certbot (
   }
   service { $systemd_service_name:
     enable    => true,
+    ensure    => running,
     require   => Package[$packages],
     subscribe => File['/etc/sysconfig/certbot'],
   }
